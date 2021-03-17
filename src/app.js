@@ -18,10 +18,12 @@ app.get('/artists', artists.list);
     threeartist(req, res)
 });*/
 
-app.get('/artists/:artistsID', function(req, res) {
+//app.get('/artists/:artistId', getArtistById);
+app.get("/artists/:artistId", function (req, res) {
     getArtistById(req, res)
 });
-app.delete('/artists/:artistID', function(req, res){ 
+
+app.delete('/artists/:artistId', function(req, res){ 
     deleteArtistById(req, res)
 }); 
 

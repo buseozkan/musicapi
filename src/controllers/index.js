@@ -1,5 +1,9 @@
 const { Artist } = require('../models');
 
+
+
+
+
 const createArtist = (req, res) => {
     //req.body
     console.log('here is the req body', req.body);
@@ -10,4 +14,23 @@ const createArtist = (req, res) => {
         res.status(400).send('not ok');
     })
 };
-module.exports = createArtist;
+
+const getAllArtists = (req, res) => {
+    const genreToSearch = req.query.genre;
+    let filter = {};
+    if (genreToSearch) {
+      filter = { where: { genre: genreToSearch } };
+    }
+    Artist.findAll(filter).then((records) => {
+      res.status(200).send(records);
+    });
+  };
+};
+
+const getArtistById = (req, res) => {
+    const artistId = req.params.artistId;
+    Artist.findByPk(artistId).then((sonuc) =>{
+        res.status(200).send(sonuc);
+    });
+};
+module.exports = {createArtist, getArtistById, getAllArtists};
