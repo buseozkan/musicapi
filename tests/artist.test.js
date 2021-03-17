@@ -53,15 +53,7 @@ describe('/artists', () => {
         .catch(error => done(error));
     })
 
-    let artists;
-    beforeEach((done) => {
-      Promise.all([
-        Artist.create({ name: 'Tame Impala', genre: 'Rock' }),
-      ]).then((documents) => {
-        artists = documents;
-        done();
-      });
-    });
+    
     
   
     describe('POST /artists', () => {
@@ -73,9 +65,7 @@ describe('/artists', () => {
             genre: 'Rock',
           })
           .then(response => {
-            console.log(response.status);
             expect(response.status).to.equal(201);
-            console.log(response.body);
             expect(response.body.name).to.equal('Tame Impala');
             expect(response.body.genre).to.equal('Rock');
             return Artist.findByPk(response.body.id, { raw: true });
@@ -93,4 +83,42 @@ describe('/artists', () => {
 
 
 
+describe('with artists in the database', () => {
+  let artists;
+  beforeEach((done) => {
+    Promise.all([
+      Artist.create({ name: 'Tame Impala', genre: 'Rock' }),
+      Artist.create({ name: 'Kylie Minogue', genre: 'Pop' }),
+      Artist.create({ name: 'Dave Brubeck', genre: 'Jazz' }),
+    ]).then((documents) => {
+      artists = documents;
+      done();
+    }).catch(error => {
+      console.log(error);
+      res.status(400).send();
+    });
+  });
 
+  describe('GET /artists', () => {
+    it('gets all artist records', (done) => {
+      request(app)
+      .get('/artists')
+      .then((res) => {
+        expect(res.status).to.equal(200);
+        console.log(res.body);
+        expect(res.body.length).to.deep.equal(3);
+        
+        res.body.forEach((artist) => {
+          const expected = artists.find((a) => a.id.toString() === artist.id);
+          expect(artist.name).to.equal(expected.name);
+          expect(artist.genre).to.equal(expected.genre);
+        });
+        done();
+      })
+      .catch(error => {
+        console.log(error);
+        res.status(400).send();
+      });
+    });
+  });
+});
