@@ -1,5 +1,6 @@
 const express = require('express');
-const { create, threeartist, getArtistById, deleteArtistById } = require('./controllers/artists');
+const { create } = require('./controllers/artists');
+const { getArtistById, deleteArtistById, patchArtistById } = require('./controllers/index');
 const { Artist } = require('./models/artist');
 const artists = require('./controllers/artists');
 
@@ -18,10 +19,14 @@ app.get('/artists', artists.list);
     threeartist(req, res)
 });*/
 
-//app.get('/artists/:artistId', getArtistById);
 app.get("/artists/:artistId", function (req, res) {
     getArtistById(req, res)
 });
+
+app.patch("/artists/:artistId", function (req, res) {
+    patchArtistById(req, res)
+});
+
 
 app.delete('/artists/:artistId', function(req, res){ 
     deleteArtistById(req, res)
