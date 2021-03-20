@@ -34,9 +34,11 @@ const getArtistById = (req, res) => {
 const patchArtistById = (req, res) => {
   const artistId = req.params.artistId;
   Artist.findByPk(artistId).then((result) => {
+    const results = 'Psychedelic Rock';
     res.status(200).send(result);
   });
 }
+
 module.exports = { createArtist, getArtistById, getAllArtists, patchArtistById };
 
 

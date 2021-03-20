@@ -12,6 +12,7 @@ describe('/artists', () => {
     }
   });
 
+
   beforeEach(async () => {
     try {
       await request(app).post('/artists').send({
@@ -83,20 +84,33 @@ describe('/artists', () => {
 
 
 
-
-
   describe('PATCH /artists/:id', () => {
-    it('updates artist genre by id', async () => {
-      try {
-        const artistList = await request(app).patch('/artists').send();
-        const sampleArtistId = artistList.body[0].id;
-        const artistByIdResponse = await request(app).patch(`/artists/${sampleArtistId}`).send();
-        expect(artistByIdResponse.status).to.equal(200);
-        console.log(artistByIdResponse);
-        expect(artistByIdResponse.body.id).to.equal(sampleArtistId);
-      } catch (error) {
-        throw error;
-      }
+    let artists;
+    beforeEach((done) => {
+      Promise.all([
+        Artist.create({ name: 'Tame Impala', genre: 'Rock' }),
+        Artist.create({ name: 'Kylie Minogue', genre: 'Pop' }),
+        Artist.create({ name: 'Dave Brubeck', genre: 'Jazz' }),
+      ])
+        .then((documents) => {
+          artists = documents;
+          done();
+        })
+        .catch((error) => done(error));
+    });
+
+    it('updates artist genre by id', (done) => {
+      const artist = artists[0];
+      request(app)
+        .patch(`/artists/${artist.id}`)
+        .send({ genre: 'Rock' })
+        .then((res) => {
+          expect(res.status).to.equal(200);
+          Artist.findByPk(artist.id, { raw: true }).then((updatedArtist) => {
+            expect(updatedArtist.genre).to.equal('Rock');
+            done();
+          }).catch(error => done(error));
+        }).catch(error => done(error));
     });
   });
 
