@@ -38,8 +38,17 @@ const patchArtistById = (req, res) => {
     res.status(200).send(result);
   });
 }
+const deleteArtistById = (req, res) => {
+  const artistId = req.params.artistId;
+  Artist.destroy({ where: { id: artistId } }).then((sonuc) => {
+    res.status(200).send("Deleted");
+  }).catch(error => {
+      console.log({error})
+      res.status(400).send("NOT OK!");
+  })
+};
 
-module.exports = { createArtist, getArtistById, getAllArtists, patchArtistById };
+module.exports = { createArtist, getArtistById, getAllArtists, patchArtistById, deleteArtistById };
 
 
 /* 

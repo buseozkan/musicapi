@@ -80,6 +80,19 @@ describe('/artists', () => {
         throw error;
       }
     });
+
+    it("should delete an artist by id", async () => {
+      try {
+        const artistList = await request(app).get("/artists").send();
+        const sampleArtistId = artistList.body[0].id;
+        const artistByIdResponse = await request(app).delete(`/artists/${sampleArtistId}`).send();
+        expect(artistByIdResponse.status).to.equal(200);
+        const artistResponse = await request(app).get(`/artists/${sampleArtistId}`).send();
+        expect(artistResponse.body).to.eql({});
+      } catch (error) {
+        throw error;
+      }
+    });
   });
 
 
