@@ -80,19 +80,6 @@ describe('/artists', () => {
         throw error;
       }
     });
-
-    it("should delete an artist by id", async () => {
-      try {
-        const artistList = await request(app).get("/artists").send();
-        const sampleArtistId = artistList.body[0].id;
-        const artistByIdResponse = await request(app).delete(`/artists/${sampleArtistId}`).send();
-        expect(artistByIdResponse.status).to.equal(200);
-        const artistResponse = await request(app).get(`/artists/${sampleArtistId}`).send();
-        expect(artistResponse.body).to.eql({});
-      } catch (error) {
-        throw error;
-      }
-    });
   });
 
 
@@ -116,15 +103,29 @@ describe('/artists', () => {
       const artist = artists[0];
       request(app)
         .patch(`/artists/${artist.id}`)
-        .send({ genre: 'Rock' })
+        .send({ genre: 'Psychedelic Rock' })
         .then((res) => {
           expect(res.status).to.equal(200);
           Artist.findByPk(artist.id, { raw: true }).then((updatedArtist) => {
-            expect(updatedArtist.genre).to.equal('Rock');
+            expect(updatedArtist.genre).to.equal('Psychedelic Rock');
+            done();
+          }).catch(error => done(error));
+        }).catch(error => done(error));
+    });
+
+
+    it('updates artist name by id', (done) => {
+      const artist = artists[0];
+      request(app)
+        .patch(`/artists/${artist.id}`)
+        .send({ name: 'Sting' })
+        .then((res) => {
+          expect(res.status).to.equal(200);
+          Artist.findByPk(artist.id, { raw: true }).then((updatedArtist) => {
+            expect(updatedArtist.name).to.eql('Sting');
             done();
           }).catch(error => done(error));
         }).catch(error => done(error));
     });
   });
-
 });

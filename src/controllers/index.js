@@ -31,6 +31,7 @@ const getArtistById = (req, res) => {
   });
 };
 
+
 const patchArtistById = (req, res) => {
   const artistId = req.params.artistId;
   Artist.findByPk(artistId).then((result) => {
@@ -38,6 +39,7 @@ const patchArtistById = (req, res) => {
     res.status(200).send(result);
   });
 }
+
 const deleteArtistById = (req, res) => {
   const artistId = req.params.artistId;
   Artist.destroy({ where: { id: artistId } }).then((sonuc) => {
@@ -48,19 +50,8 @@ const deleteArtistById = (req, res) => {
   })
 };
 
+//albums
+
+
 module.exports = { createArtist, getArtistById, getAllArtists, patchArtistById, deleteArtistById };
 
-
-/* 
-exports.getArtistById = (req, res) => {
-  const { id } = req.params;
-  Artist.findByPk(id).then(artist => {
-    if (!artist) {
-      res.status(404).json({ error: 'The artist could not be found.' });
-    } else {
-      res.status(200).json(artist);
-    }
-  });
-};
-
-*/
