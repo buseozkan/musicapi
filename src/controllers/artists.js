@@ -56,3 +56,12 @@ exports.updateArtistName = (req, res) => {
     });
 };
 
+exports.deleteArtistById = (req, res) => {
+    const artistId = req.params.artistId;
+    Artist.destroy({ where: { id: artistId } }).then((artistDeleted) => {
+        res.status(204).send('Sildik popi');
+    }).catch(error => {
+        console.log({error})
+        res.status(404).send("not ok!");
+    })
+};

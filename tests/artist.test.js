@@ -80,8 +80,37 @@ describe('/artists', () => {
         throw error;
       }
     });
+
   });
 
+  describe('DELETE /artists/:artistId', () => {
+    let artists;
+    beforeEach((done) => {
+      Promise.all([
+        Artist.create({ name: 'Tame Impala', genre: 'Rock' }),
+        Artist.create({ name: 'Kylie Minogue', genre: 'Pop' }),
+        Artist.create({ name: 'Dave Brubeck', genre: 'Jazz' }),
+      ])
+        .then((documents) => {
+          artists = documents;
+          done();
+        })
+        .catch((error) => done(error));
+    });
+    
+    it('deletes artist record by id', (done) => {
+      const artist = artists[0];
+      request(app)
+      .delete(`/artists/${artist.id}`)
+      .then((res) => {
+        expect(res.status).to.equal(204);
+        Artist.findByPk(artist.id, { raw: true }).then((updatedArtist) => {
+          expect(updatedArtist).to.equal(null);
+          done();
+        }).catch(error => done(error));
+      }).catch(error => done(error));
+    });
+  });
 
 
   describe('PATCH /artists/:id', () => {
